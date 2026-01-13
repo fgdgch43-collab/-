@@ -7,6 +7,8 @@
     </head>
     <body>
 
+      <div id="pageAlert" class="page-alert"></div>
+
       <div class="container">
 
         <h2>বাজার হিসাব</h2>
@@ -55,12 +57,12 @@
         <p>বছরের মোট টাকা: <span id="yearTotal">0</span> ৳</p>
 
       </div>
-
-        <button onclick="exportExcel()">Export to Excel</button>
+      
         <button onclick="exportPDF()">Export to PDF</button>
         
       </div>
 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
       <script src="model.js"></script>
