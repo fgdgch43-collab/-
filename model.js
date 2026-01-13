@@ -76,6 +76,8 @@ function addMarket() {
   if (!item || !qty || !unitPrice) {
     alert("সব তথ্য সঠিকভাবে দিন");
     return;
+
+
   }
 
   // Base quantity conversion
@@ -101,7 +103,7 @@ function addMarket() {
       item, qty, unit, unitPrice, total,
       date: new Date().toISOString().slice(0,10)
     });
-    alert("বাজার যোগ হয়েছে");
+   
   }
 
   saveMarkets();
@@ -126,23 +128,24 @@ function editMarket(index) {
    Delete Market
 ================================ */
 function deleteMarket(index) {
+
   let itemName = markets[index].item;
 
-  let confirmDelete = confirm(
-      `"${itemName}" মুছে ফেলতে চান?`
-  );
+  // Confirm box
+  let ok = confirm(`"${itemName}" মুছে ফেলতে চান?`);
 
-  if (!confirmDelete) {
-    // Cancel চাপলে কিছুই হবে না
+  if (!ok) {
+    // Cancel দিলে কিছুই হবে না
     return;
   }
 
-  // OK চাপলে delete হবে
+  // Delete
   markets.splice(index, 1);
   saveMarkets();
   loadReport();
-  alert(itemName + " মুছে দেওয়া হয়েছে");
 
+  // ✅ শুধু alert
+  alert(`"${itemName}" মুছে দেওয়া হয়েছে`);
 }
 
 /* ===============================
@@ -181,3 +184,86 @@ document.getElementById("item").addEventListener("input", function () {
 ================================ */
 window.onload = () => loadReport();
 
+
+
+function showAlert(message){
+  let alertBox = document.getElementById("pageAlert");
+  alertBox.innerText = message;
+  alertBox.style.display = "block";
+
+  setTimeout(()=>{
+    alertBox.style.display = "none";
+  }, 2000); // 2 সেকেন্ড পর চলে যাবে
+}
+
+// Filter
+function applyFilter(){
+let day = document.getElementById("filterDay").value;
+
+let filtered = markets.filter(m=>{
+if(day && m.date!==day) return false;
+return true;
+});
+loadReport(filtered);
+}
+
+function resetFilter(){ document.getElementById("filterDay").value=""; loadReport(); }
+
+
+// Export PDF
+
+function exportPDF() {
+
+  let html = `
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>বাজার হিসাব</title>
+      <style>
+        body { font-family: Arial; padding:20px; }
+        h2 { text-align:center; }
+        table { width:100%; border-collapse:collapse; }
+        th, td {
+          border:1px solid #000;
+          padding:6px;
+          text-align:center;
+        }
+      </style>
+    </head>
+    <body>
+      <h2>বাজার হিসাব</h2>
+      <table>
+        <tr>
+          <th>কি কিনলেন</th>
+          <th>দাম</th>
+          <th>পরিমাণ</th>
+          <th>মোট দাম</th>
+          <th>তারিখ</th>
+        </tr>
+  `;
+
+  markets.forEach(m => {
+    html += `
+      <tr>
+        <td>${m.item}</td>
+        <td>${m.unitPrice}</td>
+        <td>${m.qty} ${m.unit}</td>
+        <td>${m.total.toFixed(2)}</td>
+        <td>${m.date}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </table>
+    </body>
+    </html>
+  `;
+
+  let win = window.open("", "", "width=800,height=600");
+  win.document.write(html);
+  win.document.close();
+
+  win.focus();
+  
+}
